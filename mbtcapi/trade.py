@@ -4,10 +4,6 @@ import urllib
 import httplib
 import json
 
-mbTradeAPIKey = ''
-mbTradeAPICode = ''
-PIN = ''
-
 
 def sendRequest(apiKey, apiCode, pin, params):
     params['tonce'] = common.getTonce()
@@ -66,11 +62,9 @@ def getOrderList(apiKey, apiCode, pin, coin, orderType=None, status=None,
 
 
 def setOrder(apiKey, apiCode, pin, coin, orderType, amount, price):
-    method = 'Trade'
-    tonce = common.getTonce()
     params = {
-      'method': method,
-      'tonce': tonce,
+      'method': 'Trade',
+      'tonce': common.getTonce(),
       'volume': str(amount),
       'price': str(price)
       }
@@ -81,31 +75,17 @@ def setOrder(apiKey, apiCode, pin, coin, orderType, amount, price):
     if orderType is not None and orderType in common.orderTypes:
         params['type'] = orderType
 
-    params = urllib.urlencode(params)
-    signature = common.createSignature(apiCode, method, pin, tonce)
-    header = common.createHeader(apiKey, signature)
-    conn = httplib.HTTPSConnection("www.mercadobitcoin.com.br")
-    conn.request("POST", "/tapi/", params, header)
-    response = conn.getresponse()
-    return json.load(response)
+    return common.sendRequest(apiKey, apiCode, pin, params)
 
 
 def cancelOrder(apiKey, apiCode, pin, coin, orderId):
-    method = 'CancelOrder'
-    tonce = common.getTonce()
     params = {
-      'method': method,
-      'tonce': tonce,
+      'method': 'CancelOrder',
+      'tonce': common.getTonce(),
       'order_id': str(orderId),
       }
 
     if coin in common.mbCoins:
         params['pair'] = coin + "_brl"
 
-    params = urllib.urlencode(params)
-    signature = common.createSignature(apiCode, method, pin, tonce)
-    header = common.createHeader(apiKey, signature)
-    conn = httplib.HTTPSConnection("www.mercadobitcoin.com.br")
-    conn.request("POST", "/tapi/", params, header)
-    response = conn.getresponse()
-    return json.load(response)
+    return common.sendRequest(apiKey, apiCode, pin, params)
