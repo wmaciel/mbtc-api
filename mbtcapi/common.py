@@ -59,7 +59,7 @@ def createHeader(apiKey, signature):
 
 
 def parseResponse(response):
-    """Parse the response dict removing unwanted information"""
+    """Parse the response dict removing unwanted information."""
     response = convert(response)
     if response['success'] == 0:
         return response['error']
@@ -69,10 +69,27 @@ def parseResponse(response):
 
 class Operation:
 
+    """Define an operation.
+
+    An Operation is the actual transaction of coins. It is created when an
+    order is fully or partially executed. Therefore, operations are final and
+    cannot be canceled or reversed.
+
+    Attributes:
+    id -- Identificatin number
+    volume -- Amount of coin moved
+    price -- Price (BRL) per unit of coin
+    rate -- Fee (%) charged
+    created -- Timestamp from when the operation occured
+
+    """
+
     def __init__(self, table):
+        """Constructor"""
         self.buildFromTable(table)
 
     def buildFromTable(self, operationId, table):
+        """Read table and fetch the necessary infrmation"""
         self.id = operationId
         self.volume = table['volume']
         self.price = table['price']
@@ -82,10 +99,29 @@ class Operation:
 
 class Order:
 
+    """Define an order.
+
+    An order is an offer of either buying or selling coins. The creation of an
+    order does not mean the immediate execution of the transaction.
+
+    Attributes:
+    id -- Identification number
+    status -- 'active', 'canceled' or 'completed'
+    created -- Timestamp from when the order was created
+    price -- Price (BRL) per unit of coin
+    volume -- Amount of coin
+    pair -- Type of coin, may be 'btc_brl' or 'ltc_brl'
+    type -- Type or order, may be 'sell' or 'buy'
+    operations -- List of executed operations
+
+    """
+
     def __init__(self, table):
+        """Constructor"""
         self.buildFromTable(table)
 
     def buildFromTable(self, table):
+        """Read table and fetch the necessary infrmation."""
         self.id = list(table.keys())[0]
         data = table[self.id]
         self.status = data['status']
@@ -95,7 +131,7 @@ class Order:
         self.pair = data['pair']
         self.type = data['type']
 
-        #Creates list of operations
+        #Create list of operations
         opTable = data['operations']
         self.operations = []
         for opID, opData in list(opTable.items()):
@@ -104,10 +140,27 @@ class Order:
 
 class AccountInfo:
 
+    """Define the state of an account.
+
+    The state of the account if given by it's balances in all three supported
+    currencies i.e. brl, btc and ltc as well as the number of orders not yet
+    fully executed.
+
+    Attributes:
+    btc -- Bitcoin balance
+    ltc -- Litecoin balance
+    brl -- Brazillian Real balance
+    numOrders -- Number of open orders
+    time -- Timestamp of the moment this information was fetched
+
+    """
+
     def __init__(self, table):
+        """Constructor"""
         self.buildFromTable(self, table)
 
     def buildFromTable(self, table):
+        """Read table and fetch the necessary infrmation."""
         self.btc = table['funds']['btc']
         self.ltc = table['funds']['ltc']
         self.brl = table['funds']['brl']
