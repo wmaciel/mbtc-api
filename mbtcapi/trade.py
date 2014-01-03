@@ -27,7 +27,14 @@ def sendRequest(apiKey, apiCode, pin, params):
     conn = httplib.HTTPSConnection(common.mbDomain)
     conn.request("POST", "/tapi/", params, header)
     response = conn.getresponse()
-    return json.load(response)
+    response = json.load(response)
+    try:
+        data = common.parseResponse(response)
+    except common.ResponseException, e:
+        print str(e)
+        data = None
+
+    return data
 
 
 def getAccountInfo(apiKey, apiCode, pin):
@@ -36,6 +43,7 @@ def getAccountInfo(apiKey, apiCode, pin):
         'method': 'getInfo',
         'tonce': common.getTonce()
         }
+
     return sendRequest(apiKey, apiCode, pin, params)
 
 
