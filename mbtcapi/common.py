@@ -160,7 +160,7 @@ class AccountInfo:
 
     def __init__(self, table):
         """Constructor"""
-        self.buildFromTable(self, table)
+        self.buildFromTable(table)
 
     def buildFromTable(self, table):
         """Read table and fetch the necessary infrmation."""

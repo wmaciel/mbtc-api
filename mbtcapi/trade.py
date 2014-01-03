@@ -16,13 +16,13 @@ def sendRequest(apiKey, apiCode, pin, params):
 
     """
     params['tonce'] = common.getTonce()
-    params = urllib.urlencode(params)
     signature = common.createSignature(
         apiCode,
         params['method'],
         pin,
         params['tonce']
     )
+    params = urllib.urlencode(params)
     header = common.createHeader(apiKey, signature)
     conn = httplib.HTTPSConnection(common.mbDomain)
     conn.request("POST", "/tapi/", params, header)
@@ -44,7 +44,8 @@ def getAccountInfo(apiKey, apiCode, pin):
         'tonce': common.getTonce()
         }
 
-    return sendRequest(apiKey, apiCode, pin, params)
+    table = sendRequest(apiKey, apiCode, pin, params)
+    return common.AccountInfo(table)
 
 
 def getOrderList(apiKey, apiCode, pin, coin, orderType=None, status=None,
