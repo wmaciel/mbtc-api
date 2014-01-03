@@ -10,6 +10,15 @@ PIN = ''
 
 
 def sendRequest(apiKey, apiCode, pin, params):
+    """ Send POST request with the given parameters and return response.
+
+    Arguments:
+    apiKey -- private key given by the website
+    apiCode -- private code given by the website
+    pin -- the PIN number used in your account
+    params -- dict with the parameters needed by the API method called
+
+    """
     params['tonce'] = common.getTonce()
     params = urllib.urlencode(params)
     signature = common.createSignature(
@@ -26,6 +35,7 @@ def sendRequest(apiKey, apiCode, pin, params):
 
 
 def getAccountInfo(apiKey, apiCode, pin):
+    """Return the current balances of the account."""
     method = 'getInfo'
     tonce = common.getTonce()
     params = {'method': method, 'tonce': tonce}
@@ -40,6 +50,7 @@ def getAccountInfo(apiKey, apiCode, pin):
 
 def getOrderList(apiKey, apiCode, pin, coin, orderType=None, status=None,
                  fromId=None, endId=None, since=None, end=None):
+    """Return all the orders created that match the given filters."""
     method = 'OrderList'
     tonce = common.getTonce()
     params = {'method': method, 'tonce': tonce}
@@ -75,6 +86,7 @@ def getOrderList(apiKey, apiCode, pin, coin, orderType=None, status=None,
 
 
 def setOrder(apiKey, apiCode, pin, coin, orderType, amount, price):
+    """Create a buy or sell order."""
     method = 'Trade'
     tonce = common.getTonce()
     params = {
@@ -100,6 +112,7 @@ def setOrder(apiKey, apiCode, pin, coin, orderType, amount, price):
 
 
 def cancelOrder(apiKey, apiCode, pin, coin, orderId):
+    """Cancel an order."""
     method = 'CancelOrder'
     tonce = common.getTonce()
     params = {
