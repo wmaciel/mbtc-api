@@ -77,7 +77,13 @@ def getOrderList(apiKey, apiCode, pin, coin, orderType=None, status=None,
     if end is not None:
         params['end'] = str(end)
 
-    return sendRequest(apiKey, apiCode, pin, params)
+    orderList = []
+    table = sendRequest(apiKey, apiCode, pin, params)
+    for orderId, data in table:
+        orderList.append(common.Order(orderId, data))
+
+    return orderList
+
 
 
 def setOrder(apiKey, apiCode, pin, coin, orderType, amount, price):
@@ -95,7 +101,9 @@ def setOrder(apiKey, apiCode, pin, coin, orderType, amount, price):
     if orderType is not None and orderType in common.orderTypes:
         params['type'] = orderType
 
-    return common.sendRequest(apiKey, apiCode, pin, params)
+    table = common.sendRequest(apiKey, apiCode, pin, params)
+    orderId = table.keys()[0]
+    return common.Order(orderId, table[orderId])
 
 
 def cancelOrder(apiKey, apiCode, pin, coin, orderId):
@@ -109,4 +117,6 @@ def cancelOrder(apiKey, apiCode, pin, coin, orderId):
     if coin in common.mbCoins:
         params['pair'] = coin + "_brl"
 
-    return common.sendRequest(apiKey, apiCode, pin, params)
+    table = common.sendRequest(apiKey, apiCode, pin, params)
+    orderId = table.keys()[0]
+    return common.Order(orderId, table[orderId])
