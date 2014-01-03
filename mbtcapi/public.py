@@ -107,5 +107,3 @@ def getTrades(coin, timeBegin=None, timeEnd=None):
     response = connection.getresponse()
     output = json.load(response)
     return common.convert(output)
-
-print(str(getTicker('btc')))
