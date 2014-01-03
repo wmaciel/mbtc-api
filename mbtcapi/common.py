@@ -12,6 +12,10 @@ orderStatuses = ['active', 'canceled', 'completed']
 orderTypes = ["buy", "sell"]
 
 
+class ResponseError(StandardError):
+    pass
+
+
 def convert(input):
     """Convert unicode strings into utf-8 inside lists and dicts
 
@@ -61,7 +65,7 @@ def parseResponse(response):
     """Parse the response dict removing unwanted information."""
     response = convert(response)
     if response['success'] == 0:
-        return response['error']
+        raise ResponseError(response['error'])
     else:
         return response['return']
 
