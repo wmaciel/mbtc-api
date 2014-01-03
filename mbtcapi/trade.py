@@ -26,23 +26,20 @@ def sendRequest(apiKey, apiCode, pin, params):
 
 
 def getAccountInfo(apiKey, apiCode, pin):
-    method = 'getInfo'
-    tonce = common.getTonce()
-    params = {'method': method, 'tonce': tonce}
-    params = urllib.urlencode(params)
-    signature = common.createSignature(apiCode, method, pin, tonce)
-    header = common.createHeader(apiKey, signature)
-    conn = httplib.HTTPSConnection("www.mercadobitcoin.com.br")
-    conn.request("POST", "/tapi/", params, header)
-    response = conn.getresponse()
-    return json.load(response)
+    params = {
+        'method': 'getInfo',
+        'tonce': common.getTonce()
+        }
+    return sendRequest(apiKey, apiCode, pin, params)
+
 
 
 def getOrderList(apiKey, apiCode, pin, coin, orderType=None, status=None,
                  fromId=None, endId=None, since=None, end=None):
-    method = 'OrderList'
-    tonce = common.getTonce()
-    params = {'method': method, 'tonce': tonce}
+    params = {
+        'method': 'OrderList',
+        'tonce': common.getTonce()
+        }
 
     if coin in common.mbCoins:
         params['pair'] = coin + "_brl"
@@ -65,13 +62,7 @@ def getOrderList(apiKey, apiCode, pin, coin, orderType=None, status=None,
     if end is not None:
         params['end'] = str(end)
 
-    params = urllib.urlencode(params)
-    signature = common.createSignature(apiCode, method, pin, tonce)
-    header = common.createHeader(apiKey, signature)
-    conn = httplib.HTTPSConnection("www.mercadobitcoin.com.br")
-    conn.request("POST", "/tapi/", params, header)
-    response = conn.getresponse()
-    return json.load(response)
+    return sendRequest(apiKey, apiCode, pin, params)
 
 
 def setOrder(apiKey, apiCode, pin, coin, orderType, amount, price):
