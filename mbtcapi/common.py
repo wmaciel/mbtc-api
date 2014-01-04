@@ -25,7 +25,9 @@ def convert(input):
 
     """
     if isinstance(input, dict):
-        return {convert(key): convert(value) for key, value in input.iteritems()}
+        return {
+            convert(key): convert(value) for key, value in input.iteritems()
+            }
     elif isinstance(input, list):
         return [convert(element) for element in input]
     elif isinstance(input, unicode):
@@ -68,6 +70,17 @@ def parseResponse(response):
         raise ResponseError(response['error'])
     else:
         return response['return']
+
+
+class AccountAuthentication:
+
+    """Bunches together the three needed keys to connect to the trade API."""
+
+    def __init__(self, key, code, pin):
+        """Constructor"""
+        self.key = key
+        self.code = code
+        self.pin = pin
 
 
 class Operation:
