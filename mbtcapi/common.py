@@ -87,9 +87,9 @@ class Operation:
 
     """
 
-    def __init__(self, table):
+    def __init__(self, operationId, table):
         """Constructor"""
-        self.buildFromTable(table)
+        self.buildFromTable(operationId, table)
 
     def buildFromTable(self, operationId, table):
         """Read table and fetch the necessary information"""
