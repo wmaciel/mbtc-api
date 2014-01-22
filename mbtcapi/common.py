@@ -92,20 +92,20 @@ class Operation:
     cannot be canceled or reversed.
 
     Attributes:
-    id -- Identificatin number
+    id -- Identification number
     volume -- Amount of coin moved
     price -- Price (BRL) per unit of coin
     rate -- Fee (%) charged
-    created -- Timestamp from when the operation occured
+    created -- Timestamp from when the operation occurred
 
     """
 
-    def __init__(self, table):
+    def __init__(self, operationId, table):
         """Constructor"""
-        self.buildFromTable(table)
+        self.buildFromTable(operationId, table)
 
     def buildFromTable(self, operationId, table):
-        """Read table and fetch the necessary infrmation"""
+        """Read table and fetch the necessary information"""
         self.id = operationId
         self.volume = table['volume']
         self.price = table['price']
@@ -137,13 +137,13 @@ class Order:
         self.buildFromTable(table)
 
     def buildFromTable(self, table):
-        """Read table and fetch the necessary infrmation."""
+        """Read table and fetch the necessary information."""
         self.id = list(table.keys())[0]
         data = table[self.id]
         self.status = data['status']
         self.created = data['created']
         self.price = data['price']
-        self.volume = data['colume']
+        self.volume = data['volume']
         self.pair = data['pair']
         self.type = data['type']
 
@@ -165,7 +165,7 @@ class AccountInfo:
     Attributes:
     btc -- Bitcoin balance
     ltc -- Litecoin balance
-    brl -- Brazillian Real balance
+    brl -- Brazilian Real balance
     numOrders -- Number of open orders
     time -- Timestamp of the moment this information was fetched
 
@@ -176,7 +176,7 @@ class AccountInfo:
         self.buildFromTable(table)
 
     def buildFromTable(self, table):
-        """Read table and fetch the necessary infrmation."""
+        """Read table and fetch the necessary information."""
         self.btc = table['funds']['btc']
         self.ltc = table['funds']['ltc']
         self.brl = table['funds']['brl']

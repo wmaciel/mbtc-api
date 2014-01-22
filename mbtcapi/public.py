@@ -7,7 +7,7 @@ import common
 def getTicker(coin):
     """ Return the ticker information of the current state of the exchange.
 
-    The ticker contains a summary of the curent state of the exchange for a
+    The ticker contains a summary of the current state of the exchange for a
     given coin.
     This information is given  as a dict in the following arrangement:
     {
@@ -17,7 +17,7 @@ def getTicker(coin):
         "vol": Amount of coins (LTC or BTC) traded today,
         "last": Price (BRL) of the last transaction,
         "buy": Current highest price (BRL) offered by people buying,
-        "sell": Current lowest price (BRL) offered by poeple selling,
+        "sell": Current lowest price (BRL) offered by people selling,
         "date": timestamp of the last ticker update
       }
     }
@@ -86,7 +86,7 @@ def getTrades(coin, timeBegin=None, timeEnd=None):
 
     Arguments:
     coin -- "btc" or "ltc", defines which coin the info is about
-    timeBegin -- (optional) Timestamp of the begining of the wanted history
+    timeBegin -- (optional) Timestamp of the beginning of the wanted history
     timeEnd -- (optional) Timestamp of the end of the wanted history
 
     """
