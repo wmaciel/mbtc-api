@@ -5,7 +5,7 @@ import httplib
 import json
 
 
-def sendRequest(apiKey, apiCode, pin, params):
+def sendRequest(authentication, params):
     """ Send POST request with the given parameters and return response.
 
     Arguments:
@@ -15,6 +15,10 @@ def sendRequest(apiKey, apiCode, pin, params):
     params -- dict with the parameters needed by the API method called
 
     """
+    apiKey = authentication.key
+    apiCode = authentication.code
+    pin = authentication.pin
+
     params['tonce'] = common.getTonce()
     signature = common.createSignature(
         apiCode,
@@ -37,18 +41,18 @@ def sendRequest(apiKey, apiCode, pin, params):
     return data
 
 
-def getAccountInfo(apiKey, apiCode, pin):
+def getAccountInfo(authentication):
     """Return the current balances of the account."""
     params = {
         'method': 'getInfo',
         'tonce': common.getTonce()
         }
 
-    table = sendRequest(apiKey, apiCode, pin, params)
+    table = sendRequest(authentication, params)
     return common.AccountInfo(table)
 
 
-def getOrderList(apiKey, apiCode, pin, coin, orderType=None, status=None,
+def getOrderList(authentication, coin, orderType=None, status=None,
                  fromId=None, endId=None, since=None, end=None):
     """Return all the orders created that match the given filters."""
     params = {
@@ -78,15 +82,14 @@ def getOrderList(apiKey, apiCode, pin, coin, orderType=None, status=None,
         params['end'] = str(end)
 
     orderList = []
-    table = sendRequest(apiKey, apiCode, pin, params)
+    table = sendRequest(authentication, params)
     for orderId, data in table:
         orderList.append(common.Order(orderId, data))
 
     return orderList
 
 
-
-def setOrder(apiKey, apiCode, pin, coin, orderType, amount, price):
+def setOrder(authentication, coin, orderType, amount, price):
     """Create a buy or sell order."""
     params = {
       'method': 'Trade',
@@ -101,12 +104,12 @@ def setOrder(apiKey, apiCode, pin, coin, orderType, amount, price):
     if orderType is not None and orderType in common.orderTypes:
         params['type'] = orderType
 
-    table = common.sendRequest(apiKey, apiCode, pin, params)
+    table = common.sendRequest(authentication, params)
     orderId = table.keys()[0]
     return common.Order(orderId, table[orderId])
 
 
-def cancelOrder(apiKey, apiCode, pin, coin, orderId):
+def cancelOrder(authentication, coin, orderId):
     """Cancel an order."""
     params = {
       'method': 'CancelOrder',
@@ -117,6 +120,6 @@ def cancelOrder(apiKey, apiCode, pin, coin, orderId):
     if coin in common.mbCoins:
         params['pair'] = coin + "_brl"
 
-    table = common.sendRequest(apiKey, apiCode, pin, params)
+    table = common.sendRequest(authentication, params)
     orderId = table.keys()[0]
     return common.Order(orderId, table[orderId])
